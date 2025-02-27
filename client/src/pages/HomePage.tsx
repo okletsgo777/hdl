@@ -43,11 +43,10 @@ export default function HomePage() {
   });
 
   const mutation = useMutation({
-    mutationFn: (data: InsertWaitlist) =>
-      apiRequest("/api/waitlist", {
-        method: "POST",
-        body: JSON.stringify(data),
-      }),
+    mutationFn: async (data: InsertWaitlist) => {
+      const response = await apiRequest("POST", "/api/waitlist", data);
+      return response.json();
+    },
     onSuccess: () => {
       toast({
         title: "Success!",
@@ -55,10 +54,10 @@ export default function HomePage() {
       });
       form.reset();
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
-        description: error?.message || "Something went wrong. Please try again.",
+        description: error.message || "Something went wrong. Please try again.",
         variant: "destructive",
       });
     },
